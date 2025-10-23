@@ -95,6 +95,7 @@ const Login = () => {
               onSubmit={handleLogin}
               isLoading={isLoading}
               error={error}
+              navigate={navigate}
             />
 
             {/* Social Login */}

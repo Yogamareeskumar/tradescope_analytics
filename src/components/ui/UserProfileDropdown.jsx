@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 import Icon from '../AppIcon';
 import Button from './Button';
 import Image from '../AppImage';
@@ -6,43 +8,51 @@ import Image from '../AppImage';
 const UserProfileDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const navigate = useNavigate();
+  const { user, userProfile, signOut } = useAuth();
 
-  const user = {
-    name: 'Alex Thompson',
-    email: 'alex.thompson@tradescope.com',
-    avatar: '/assets/images/avatar-placeholder.jpg',
-    role: 'Professional Trader'
+  // Use real user data from AuthContext or fallback to defaults
+  const displayUser = {
+    name: userProfile?.full_name || user?.email?.split('@')?.[0] || 'Trader',
+    email: user?.email || 'user@tradescope.com',
+    avatar: userProfile?.avatar_url || '/assets/images/no_image.png',
+    role: userProfile?.trading_experience === 'professional' ? 'Professional Trader' : 
+          userProfile?.trading_experience === 'advanced' ? 'Advanced Trader' :
+          userProfile?.trading_experience === 'intermediate' ? 'Intermediate Trader' : 'Beginner Trader'
   };
 
   const menuItems = [
     { 
       label: 'Profile Settings', 
       icon: 'User', 
-      action: () => console.log('Profile Settings'),
+      action: () => navigate('/profile-settings'),
       description: 'Manage your account details'
     },
     { 
       label: 'Trading Preferences', 
       icon: 'Settings', 
-      action: () => console.log('Trading Preferences'),
+      action: () => navigate('/profile-settings'),
       description: 'Configure trading parameters'
     },
     { 
       label: 'Security', 
       icon: 'Shield', 
-      action: () => console.log('Security'),
+      action: () => navigate('/security'),
       description: 'Password and 2FA settings'
     },
     { 
       label: 'Help & Support', 
       icon: 'HelpCircle', 
-      action: () => console.log('Help & Support'),
+      action: () => navigate('/help-support'),
       description: 'Get assistance and documentation'
     },
     { 
       label: 'Sign Out', 
       icon: 'LogOut', 
-      action: () => window.location.href = '/login',
+      action: async () => {
+        await signOut();
+        navigate('/login');
+      },
       description: 'Securely log out of your account',
       variant: 'destructive'
     }
@@ -59,8 +69,8 @@ const UserProfileDropdown = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleItemClick = (item) => {
-    item?.action();
+  const handleItemClick = async (item) => {
+    await item?.action();
     setIsOpen(false);
   };
 
@@ -72,13 +82,13 @@ const UserProfileDropdown = () => {
         className="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-muted transition-colors duration-200"
       >
         <Image
-          src={user?.avatar}
-          alt={`${user?.name} profile picture`}
+          src={displayUser?.avatar}
+          alt={`${displayUser?.name} profile picture`}
           className="w-8 h-8 rounded-full object-cover"
         />
         <div className="hidden sm:block text-left">
-          <div className="text-sm font-medium text-foreground">{user?.name}</div>
-          <div className="text-xs text-muted-foreground">{user?.role}</div>
+          <div className="text-sm font-medium text-foreground">{displayUser?.name}</div>
+          <div className="text-xs text-muted-foreground">{displayUser?.role}</div>
         </div>
         <Icon 
           name="ChevronDown" 
@@ -92,19 +102,19 @@ const UserProfileDropdown = () => {
           <div className="px-4 py-3 border-b border-border">
             <div className="flex items-center space-x-3">
               <Image
-                src={user?.avatar}
-                alt={`${user?.name} profile picture`}
+                src={displayUser?.avatar}
+                alt={`${displayUser?.name} profile picture`}
                 className="w-10 h-10 rounded-full object-cover"
               />
               <div className="flex-1 min-w-0">
                 <div className="text-sm font-medium text-popover-foreground truncate">
-                  {user?.name}
+                  {displayUser?.name}
                 </div>
                 <div className="text-xs text-muted-foreground truncate">
-                  {user?.email}
+                  {displayUser?.email}
                 </div>
                 <div className="text-xs text-accent font-medium">
-                  {user?.role}
+                  {displayUser?.role}
                 </div>
               </div>
             </div>

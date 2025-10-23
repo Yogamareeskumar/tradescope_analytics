@@ -10,6 +10,10 @@ import Dashboard from './pages/dashboard';
 import BrokerIntegration from './pages/broker-integration';
 import Analytics from './pages/analytics';
 import Register from './pages/register';
+import ForgotPassword from './pages/forgot-password';
+import ProfileSettings from './pages/profile-settings';
+import Security from './pages/security';
+import HelpSupport from './pages/help-support';
 
 const Routes = () => {
   return (
@@ -22,10 +26,14 @@ const Routes = () => {
             <Route path="/" element={<Login />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/trade-management" element={<TradeManagement />} />
             <Route path="/broker-integration" element={<BrokerIntegration />} />
             <Route path="/analytics" element={<Analytics />} />
+            <Route path="/profile-settings" element={<ProfileSettings />} />
+            <Route path="/security" element={<Security />} />
+            <Route path="/help-support" element={<HelpSupport />} />
             <Route path="*" element={<NotFound />} />
           </RouterRoutes>
         </ErrorBoundary>

@@ -4,7 +4,7 @@ import Input from '../../../components/ui/Input';
 import { Checkbox } from '../../../components/ui/Checkbox';
 import Icon from '../../../components/AppIcon';
 
-const LoginForm = ({ onSubmit, isLoading, error }) => {
+const LoginForm = ({ onSubmit, isLoading, error, navigate }) => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -79,7 +79,7 @@ const LoginForm = ({ onSubmit, isLoading, error }) => {
 
         <button
           type="button"
-          onClick={() => window.location.href = '/forgot-password'}
+          onClick={() => navigate('/forgot-password')}
           className="text-sm text-accent hover:text-accent/80 font-medium transition-colors"
           disabled={isLoading}
         >
