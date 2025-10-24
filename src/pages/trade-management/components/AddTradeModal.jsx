@@ -4,7 +4,7 @@ import Button from '../../../components/ui/Button';
 import Input from '../../../components/ui/Input';
 import Select from '../../../components/ui/Select';
 
-const AddTradeModal = ({ isOpen, onClose, onAddTrade }) => {
+const AddTradeModal = ({ isOpen, onClose, onAddTrade, accounts }) => {
   const [formData, setFormData] = useState({
     instrument: '',
     assetClass: '',
@@ -113,15 +113,26 @@ const AddTradeModal = ({ isOpen, onClose, onAddTrade }) => {
       return;
     }
 
+    // Enhanced trade data with proper validation
     const tradeData = {
-      ...formData,
+      instrument: formData?.instrument?.trim(),
+      tradeType: formData?.type,
       quantity: parseFloat(formData?.quantity),
       entryPrice: parseFloat(formData?.entryPrice),
       exitPrice: formData?.exitPrice ? parseFloat(formData?.exitPrice) : null,
+      tradeDate: formData?.entryDate,
+      strategy: formData?.strategy || null,
+      notes: formData?.notes?.trim() || null,
+      process: 'manual',
       pnl: calculatePnL(),
-      source: 'manual',
-      id: Date.now() // Simple ID generation for demo
+      pnlCurrency: formData?.currency
     };
+
+    // Validate data before submission
+    if (tradeData?.quantity <= 0 || tradeData?.entryPrice <= 0) {
+      console.error('Invalid trade data: quantity or entry price');
+      return;
+    }
 
     onAddTrade(tradeData);
     handleClose();

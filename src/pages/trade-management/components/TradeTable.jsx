@@ -3,7 +3,7 @@ import Icon from '../../../components/AppIcon';
 import Button from '../../../components/ui/Button';
 import { Checkbox } from '../../../components/ui/Checkbox';
 
-const TradeTable = ({ trades, onEditTrade, onDeleteTrade, onBulkAction, selectedTrades, onTradeSelect }) => {
+const TradeTable = ({ trades, onEditTrade, onViewTrade, onDeleteTrade, onBulkAction, selectedTrades, onTradeSelect }) => {
   const [sortConfig, setSortConfig] = useState({ key: 'date', direction: 'desc' });
 
   const handleSort = (key) => {
@@ -73,6 +73,32 @@ const TradeTable = ({ trades, onEditTrade, onDeleteTrade, onBulkAction, selected
 
   const isAllSelected = trades?.length > 0 && selectedTrades?.length === trades?.length;
   const isIndeterminate = selectedTrades?.length > 0 && selectedTrades?.length < trades?.length;
+
+  const handleDuplicateTrade = (trade) => {
+    // Create a duplicate trade with modified data
+    const duplicatedTrade = {
+      ...trade,
+      id: undefined, // Remove ID to create new trade
+      instrument: `${trade?.instrument} (Copy)`,
+      tradeDate: new Date()?.toISOString(),
+      exitPrice: null,
+      pnl: 0,
+      status: 'open'
+    };
+    
+    // Call the onEditTrade handler to open form with duplicated data
+    onEditTrade(duplicatedTrade, true); // Pass true to indicate it's a duplicate
+  };
+
+  const handleAddNote = (trade) => {
+    const currentNotes = trade?.notes || '';
+    const newNote = prompt('Add a note to this trade:', currentNotes);
+    
+    if (newNote !== null && newNote !== currentNotes) {
+      // Update the trade with new notes
+      onEditTrade(trade?.id, { notes: newNote });
+    }
+  };
 
   return (
     <div className="bg-card border border-border rounded-lg overflow-hidden">
@@ -236,7 +262,16 @@ const TradeTable = ({ trades, onEditTrade, onDeleteTrade, onBulkAction, selected
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() => onEditTrade(trade)}
+                      onClick={() => onViewTrade?.(trade)}
+                      title="View Trade Details"
+                    >
+                      <Icon name="Eye" size={16} />
+                    </Button>
+                    
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => onEditTrade?.(trade)}
                       title="Edit Trade"
                     >
                       <Icon name="Edit" size={16} />
@@ -245,7 +280,7 @@ const TradeTable = ({ trades, onEditTrade, onDeleteTrade, onBulkAction, selected
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() => console.log('Duplicate trade:', trade?.id)}
+                      onClick={() => handleDuplicateTrade(trade)}
                       title="Duplicate Trade"
                     >
                       <Icon name="Copy" size={16} />
@@ -254,7 +289,7 @@ const TradeTable = ({ trades, onEditTrade, onDeleteTrade, onBulkAction, selected
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() => console.log('Add note:', trade?.id)}
+                      onClick={() => handleAddNote(trade)}
                       title="Add Note"
                     >
                       <Icon name="MessageSquare" size={16} />
@@ -263,7 +298,7 @@ const TradeTable = ({ trades, onEditTrade, onDeleteTrade, onBulkAction, selected
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() => onDeleteTrade(trade?.id)}
+                      onClick={() => onDeleteTrade?.(trade?.id)}
                       title="Delete Trade"
                       className="text-destructive hover:text-destructive"
                     >
@@ -343,7 +378,17 @@ const TradeTable = ({ trades, onEditTrade, onDeleteTrade, onBulkAction, selected
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={() => onEditTrade(trade)}
+                  onClick={() => onViewTrade?.(trade)}
+                  title="View Details"
+                >
+                  <Icon name="Eye" size={16} />
+                </Button>
+                
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => onEditTrade?.(trade)}
+                  title="Edit Trade"
                 >
                   <Icon name="Edit" size={16} />
                 </Button>
@@ -351,7 +396,8 @@ const TradeTable = ({ trades, onEditTrade, onDeleteTrade, onBulkAction, selected
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={() => onDeleteTrade(trade?.id)}
+                  onClick={() => onDeleteTrade?.(trade?.id)}
+                  title="Delete Trade"
                   className="text-destructive hover:text-destructive"
                 >
                   <Icon name="Trash2" size={16} />

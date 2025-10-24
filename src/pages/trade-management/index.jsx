@@ -5,6 +5,7 @@ import TradeFilters from './components/TradeFilters';
 import TradeTable from './components/TradeTable';
 import BulkActions from './components/BulkActions';
 import AddTradeModal from './components/AddTradeModal';
+import TradeDetailsModal from './components/TradeDetailsModal';
 import Header from '../../components/ui/Header';
 import Button from '../../components/ui/Button';
 
@@ -26,6 +27,8 @@ const TradeManagement = () => {
 
   const [selectedTrades, setSelectedTrades] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [selectedTrade, setSelectedTrade] = useState(null);
   const [filters, setFilters] = useState({
     status: '',
     symbol: '',
@@ -56,23 +59,68 @@ const TradeManagement = () => {
 
   const handleAddTrade = async (tradeData) => {
     try {
+      // Additional client-side authentication check
+      if (!user) {
+        console.error('Trade creation failed: User not authenticated in component');
+        // Remove setError call as it's not available in this scope
+        return { success: false, error: 'User not authenticated' };
+      }
+
       const result = await createTrade(tradeData);
       if (result?.success) {
         setShowAddModal(false);
-        // Trades list will be automatically updated via the hook
+        // Reload trades to show the new trade
+        loadTrades(filters);
         return { success: true };
       } else {
-        return { success: false, error: result?.error };
+        console.error('Trade creation failed:', result?.error);
+        // Show user-friendly error message
+        const errorMessage = result?.error === 'User not authenticated' ? 'Authentication expired. Please refresh the page and try again.' : result?.error || 'Failed to create trade';
+        return { success: false, error: errorMessage };
       }
     } catch (error) {
+      console.error('Trade creation error:', error);
       return { success: false, error: 'Failed to create trade' };
     }
   };
 
-  const handleEditTrade = async (tradeId, updates) => {
+  const handleViewTrade = (trade) => {
+    setSelectedTrade(trade);
+    setShowDetailsModal(true);
+  };
+
+  const handleEditTrade = async (tradeOrId, updates) => {
     try {
-      const result = await updateTrade(tradeId, updates);
-      return result;
+      // Handle edit from details modal - open AddTradeModal with trade data
+      if (typeof tradeOrId === 'object' && !updates) {
+        setSelectedTrade(tradeOrId);
+        setShowDetailsModal(false);
+        setShowAddModal(true);
+        return;
+      }
+
+      // Handle both direct trade object (for duplicates) and ID + updates
+      if (typeof tradeOrId === 'object' && updates === true) {
+        // This is a duplicate operation - create new trade
+        const duplicateData = {
+          instrument: tradeOrId?.instrument,
+          tradeType: tradeOrId?.tradeType,
+          quantity: tradeOrId?.quantity,
+          entryPrice: tradeOrId?.entryPrice,
+          tradeDate: new Date()?.toISOString(),
+          strategy: tradeOrId?.strategy,
+          notes: tradeOrId?.notes,
+          process: 'manual'
+        };
+        return await createTrade(duplicateData);
+      } else {
+        // Regular update operation
+        const result = await updateTrade(tradeOrId, updates);
+        if (result?.success) {
+          loadTrades(filters); // Reload trades to show updates
+        }
+        return result;
+      }
     } catch (error) {
       return { success: false, error: 'Failed to update trade' };
     }
@@ -129,6 +177,12 @@ const TradeManagement = () => {
       ...prev, 
       offset: prev?.offset + prev?.limit 
     }));
+  };
+
+  const handleCloseModals = () => {
+    setShowAddModal(false);
+    setShowDetailsModal(false);
+    setSelectedTrade(null);
   };
 
   if (authLoading) {
@@ -218,6 +272,7 @@ const TradeManagement = () => {
             selectedTrades={selectedTrades}
             onSelectionChange={setSelectedTrades}
             onTradeSelect={setSelectedTrades}
+            onViewTrade={handleViewTrade}
             onEditTrade={handleEditTrade}
             onCloseTrade={handleCloseTrade}
             onDeleteTrade={handleDeleteTrade}
@@ -242,11 +297,22 @@ const TradeManagement = () => {
         {showAddModal && (
           <AddTradeModal
             isOpen={showAddModal}
+            trade={selectedTrade} // Pass selected trade for editing
             accounts={accounts || []}
-            onClose={() => setShowAddModal(false)}
+            onClose={handleCloseModals}
             onAddTrade={handleAddTrade}
             onSubmit={handleAddTrade}
             loading={loading?.accounts}
+          />
+        )}
+
+        {/* Trade Details Modal */}
+        {showDetailsModal && (
+          <TradeDetailsModal
+            isOpen={showDetailsModal}
+            trade={selectedTrade}
+            onClose={handleCloseModals}
+            onEdit={handleEditTrade}
           />
         )}
       </main>

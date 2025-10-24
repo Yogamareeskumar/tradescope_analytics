@@ -78,24 +78,49 @@ export class TradingService {
   // Create new trade
   static async createTrade(tradeData) {
     try {
-      const { data, error } = await supabase?.from('trades')?.insert([{
-          account_id: tradeData?.accountId,
-          symbol: tradeData?.symbol,
-          trade_type: tradeData?.tradeType,
-          position_side: tradeData?.positionSide,
-          quantity: tradeData?.quantity,
-          entry_price: tradeData?.entryPrice,
-          stop_loss: tradeData?.stopLoss,
-          take_profit: tradeData?.takeProfit,
-          notes: tradeData?.notes || null
-        }])?.select()?.single();
+      // Get current user and session for proper authentication
+      const { data: { user }, error: userError } = await supabase?.auth?.getUser();
+      
+      if (userError || !user) {
+        console.error('Authentication error:', userError);
+        return { success: false, data: null, error: 'User not authenticated' };
+      }
+
+      // Ensure userId is properly formatted as text for RLS policy matching
+      const userId = user?.id?.toString();
+      
+      if (!userId) {
+        return { success: false, data: null, error: 'Invalid user ID' };
+      }
+
+      // Validate required fields
+      if (!tradeData?.instrument || !tradeData?.quantity || !tradeData?.entryPrice) {
+        return { success: false, data: null, error: 'Missing required trade data' };
+      }
+
+      const { data, error } = await supabase?.from('trades')?.insert({
+          instrument: tradeData?.instrument?.toString(),
+          tradeType: tradeData?.tradeType?.toString(),
+          quantity: parseInt(tradeData?.quantity),
+          entryPrice: parseFloat(tradeData?.entryPrice),
+          exitPrice: tradeData?.exitPrice ? parseFloat(tradeData?.exitPrice) : null,
+          tradeDate: tradeData?.tradeDate || new Date()?.toISOString(),
+          strategy: tradeData?.strategy || null,
+          notes: tradeData?.notes || null,
+          process: tradeData?.process || 'manual',
+          pnl: tradeData?.pnl || 0,
+          pnlCurrency: tradeData?.pnlCurrency || 'INR',
+          userId: userId // Properly formatted user ID as text
+        })?.select()?.single();
 
       if (error) {
+        console.error('Database insert error:', error);
         return { success: false, data: null, error: error?.message };
       }
 
       return { success: true, data, error: null };
     } catch (error) {
+      console.error('Trade creation error:', error);
       return { success: false, data: null, error: 'Failed to create trade' };
     }
   }

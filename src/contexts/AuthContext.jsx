@@ -144,7 +144,8 @@ export const AuthProvider = ({ children }) => {
     signOut,
     updateProfile,
     resetPassword,
-    isAuthenticated: !!user
+    isAuthenticated: !!user,
+    getCurrentUserId: () => user?.id?.toString() || null
   }
 
   return (
