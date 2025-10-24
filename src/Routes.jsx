@@ -15,6 +15,8 @@ import ProfileSettings from './pages/profile-settings';
 import Security from './pages/security';
 import HelpSupport from './pages/help-support';
 import Notifications from './pages/notifications';
+import PrivacyPolicy from './pages/privacy-policy';
+import TermsOfService from './pages/terms-of-service';
 
 const Routes = () => {
   return (
@@ -36,6 +38,8 @@ const Routes = () => {
             <Route path="/security" element={<Security />} />
             <Route path="/help-support" element={<HelpSupport />} />
             <Route path="/notifications" element={<Notifications />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms-of-service" element={<TermsOfService />} />
             <Route path="*" element={<NotFound />} />
           </RouterRoutes>
         </ErrorBoundary>

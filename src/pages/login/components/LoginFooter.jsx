@@ -1,7 +1,16 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import Button from '../../../components/ui/Button';
 
 const LoginFooter = ({ isLoading }) => {
+  const navigate = useNavigate();
+
+  const handleNavigation = (path) => {
+    if (!isLoading) {
+      navigate(path);
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Sign Up Link */}
@@ -10,7 +19,7 @@ const LoginFooter = ({ isLoading }) => {
           Don't have an account?{' '}
           <Button
             variant="link"
-            onClick={() => window.location.href = '/register'}
+            onClick={() => handleNavigation('/register')}
             disabled={isLoading}
             className="p-0 h-auto text-accent hover:text-accent/80 font-medium"
           >
@@ -21,20 +30,23 @@ const LoginFooter = ({ isLoading }) => {
       {/* Footer Links */}
       <div className="flex flex-wrap justify-center gap-6 text-xs text-muted-foreground">
         <button 
-          onClick={() => console.log('Privacy Policy')}
-          className="hover:text-foreground transition-colors"
+          onClick={() => handleNavigation('/privacy-policy')}
+          disabled={isLoading}
+          className="hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Privacy Policy
         </button>
         <button 
-          onClick={() => console.log('Terms of Service')}
-          className="hover:text-foreground transition-colors"
+          onClick={() => handleNavigation('/terms-of-service')}
+          disabled={isLoading}
+          className="hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Terms of Service
         </button>
         <button 
-          onClick={() => console.log('Support')}
-          className="hover:text-foreground transition-colors"
+          onClick={() => handleNavigation('/help-support')}
+          disabled={isLoading}
+          className="hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Support
         </button>
