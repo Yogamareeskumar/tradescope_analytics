@@ -5,6 +5,7 @@ import UserProfileDropdown from './UserProfileDropdown';
 import NotificationCenter from './NotificationCenter';
 import CurrencyToggle from './CurrencyToggle';
 import SyncStatusIndicator from './SyncStatusIndicator';
+import ThemeToggle from './ThemeToggle';
 
 const Header = ({ activeRoute = '/dashboard' }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -42,12 +43,12 @@ const Header = ({ activeRoute = '/dashboard' }) => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-card border-b border-border">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-card border-b border-border theme-transition">
       <div className="flex items-center justify-between h-16 px-6">
         {/* Logo */}
         <div className="flex items-center">
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center theme-transition">
               <Icon name="TrendingUp" size={20} color="white" />
             </div>
             <span className="text-xl font-semibold text-foreground">TradeScope</span>
@@ -75,6 +76,7 @@ const Header = ({ activeRoute = '/dashboard' }) => {
         <div className="flex items-center space-x-4">
           <SyncStatusIndicator />
           <CurrencyToggle />
+          <ThemeToggle variant="toggle" />
           <NotificationCenter />
           <UserProfileDropdown />
           
@@ -91,7 +93,7 @@ const Header = ({ activeRoute = '/dashboard' }) => {
       </div>
       {/* Mobile Navigation Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-card border-t border-border">
+        <div className="md:hidden bg-card border-t border-border theme-transition">
           <nav className="px-6 py-4 space-y-2">
             {navigationItems?.map((item) => (
               <Button
