@@ -1,8 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Icon from '../AppIcon';
 import Button from './Button';
 
 const NotificationCenter = () => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState([
     {
@@ -79,6 +81,11 @@ const NotificationCenter = () => {
 
   const clearNotification = (id) => {
     setNotifications(prev => prev?.filter(notification => notification?.id !== id));
+  };
+
+  const handleViewAllNotifications = () => {
+    setIsOpen(false);
+    navigate('/notifications');
   };
 
   const getColorClasses = (color, read) => {
@@ -201,10 +208,7 @@ const NotificationCenter = () => {
                 variant="ghost"
                 size="sm"
                 className="w-full text-accent hover:text-accent/80"
-                onClick={() => {
-                  console.log('View all notifications');
-                  setIsOpen(false);
-                }}
+                onClick={handleViewAllNotifications}
               >
                 View all notifications
               </Button>

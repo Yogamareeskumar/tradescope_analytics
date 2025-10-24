@@ -77,6 +77,27 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
+  const signUp = async (email, password, metadata = {}) => {
+    try {
+      const { data, error } = await supabase?.auth?.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: metadata?.fullName || '',
+            role: metadata?.role || 'trader',
+            experience_level: metadata?.experienceLevel || '',
+            asset_classes: metadata?.assetClasses || [],
+            base_currency: metadata?.baseCurrency || 'USD',
+          }
+        }
+      })
+      return { data, error }
+    } catch (error) {
+      return { error: { message: 'Network error. Please try again.' } }
+    }
+  }
+
   const signOut = async () => {
     try {
       const { error } = await supabase?.auth?.signOut()
@@ -119,6 +140,7 @@ export const AuthProvider = ({ children }) => {
     loading,
     profileLoading,
     signIn,
+    signUp,
     signOut,
     updateProfile,
     resetPassword,

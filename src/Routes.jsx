@@ -14,6 +14,7 @@ import ForgotPassword from './pages/forgot-password';
 import ProfileSettings from './pages/profile-settings';
 import Security from './pages/security';
 import HelpSupport from './pages/help-support';
+import Notifications from './pages/notifications';
 
 const Routes = () => {
   return (
@@ -34,6 +35,7 @@ const Routes = () => {
             <Route path="/profile-settings" element={<ProfileSettings />} />
             <Route path="/security" element={<Security />} />
             <Route path="/help-support" element={<HelpSupport />} />
+            <Route path="/notifications" element={<Notifications />} />
             <Route path="*" element={<NotFound />} />
           </RouterRoutes>
         </ErrorBoundary>

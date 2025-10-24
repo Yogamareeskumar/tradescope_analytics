@@ -5,7 +5,7 @@ import Select from '../../../components/ui/Select';
 import { Checkbox } from '../../../components/ui/Checkbox';
 import Icon from '../../../components/AppIcon';
 
-const RegistrationForm = ({ onSubmit, isLoading }) => {
+const RegistrationForm = ({ onSubmit, isLoading, error }) => {
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -143,6 +143,12 @@ const RegistrationForm = ({ onSubmit, isLoading }) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {error && (
+        <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
+          <p className="text-sm text-destructive font-medium">{error}</p>
+        </div>
+      )}
+      
       {/* Personal Information */}
       <div className="space-y-4">
         <h3 className="text-lg font-semibold text-foreground">Personal Information</h3>
