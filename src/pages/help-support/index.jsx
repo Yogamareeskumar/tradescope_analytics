@@ -104,6 +104,39 @@ const HelpSupport = () => {
     { value: 'high', label: 'High', color: 'text-red-600' }
   ];
 
+  const handleResourceAction = (resourceType) => {
+    // Handle different resource types with appropriate actions
+    switch (resourceType) {
+      case 'User Guide':
+        // Open user guide in new tab or navigate to documentation
+        window?.open('https://docs.tradescope.com/user-guide', '_blank');
+        break;
+      case 'API Documentation':
+        // Open API docs in new tab
+        window?.open('https://docs.tradescope.com/api', '_blank');
+        break;
+      case 'Video Tutorials':
+        // Open video tutorials page
+        window?.open('https://tutorials.tradescope.com', '_blank');
+        break;
+      case 'Trading Strategies':
+        // Navigate to strategies section or educational content
+        window?.open('https://education.tradescope.com/strategies', '_blank');
+        break;
+      case 'Market Data':
+        // Open market data documentation
+        window?.open('https://docs.tradescope.com/market-data', '_blank');
+        break;
+      case 'System Status':
+        // Open system status page
+        window?.open('https://status.tradescope.com', '_blank');
+        break;
+      default:
+        // Fallback for unknown resource types
+        console.log(`Resource ${resourceType} not yet implemented`);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header activeRoute="/help-support" />
@@ -331,74 +364,145 @@ const HelpSupport = () => {
 
           {/* Resources Tab */}
           {activeTab === 'resources' && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[
-                {
-                  title: 'User Guide',
-                  description: 'Complete guide to using TradeScope features',
-                  icon: 'Book',
-                  color: 'bg-blue-500',
-                  items: ['Getting Started', 'Broker Setup', 'Analytics Guide']
-                },
-                {
-                  title: 'API Documentation',
-                  description: 'Technical documentation for developers',
-                  icon: 'Code',
-                  color: 'bg-green-500',
-                  items: ['REST API', 'WebSocket', 'SDKs']
-                },
-                {
-                  title: 'Video Tutorials',
-                  description: 'Step-by-step video guides',
-                  icon: 'Play',
-                  color: 'bg-purple-500',
-                  items: ['Platform Overview', 'Advanced Features', 'Tips & Tricks']
-                },
-                {
-                  title: 'Trading Strategies',
-                  description: 'Learn about different trading approaches',
-                  icon: 'TrendingUp',
-                  color: 'bg-orange-500',
-                  items: ['Day Trading', 'Swing Trading', 'Risk Management']
-                },
-                {
-                  title: 'Market Data',
-                  description: 'Understanding market data and symbols',
-                  icon: 'BarChart',
-                  color: 'bg-red-500',
-                  items: ['NSE/BSE Symbols', 'Options Chain', 'Historical Data']
-                },
-                {
-                  title: 'System Status',
-                  description: 'Check platform status and uptime',
-                  icon: 'Activity',
-                  color: 'bg-teal-500',
-                  items: ['Current Status', 'Maintenance Schedule', 'Incident History']
-                }
-              ]?.map((resource, index) => (
-                <div key={index} className="bg-card border border-border rounded-xl p-6 hover:shadow-lg transition-shadow">
-                  <div className="flex items-center space-x-3 mb-4">
-                    <div className={`w-10 h-10 ${resource?.color} rounded-lg flex items-center justify-center`}>
-                      <Icon name={resource?.icon} size={20} className="text-white" />
+            <div className="space-y-6">
+              {/* Resource Categories Header */}
+              <div className="bg-card border border-border rounded-xl p-6">
+                <h2 className="text-xl font-semibold text-foreground mb-3">Documentation & Learning Resources</h2>
+                <p className="text-muted-foreground">
+                  Access comprehensive guides, tutorials, and documentation to make the most of TradeScope
+                </p>
+              </div>
+
+              {/* Resource Cards Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[
+                  {
+                    title: 'User Guide',
+                    description: 'Complete guide to using TradeScope features',
+                    icon: 'Book',
+                    color: 'bg-blue-500',
+                    items: ['Getting Started', 'Broker Setup', 'Analytics Guide'],
+                    available: true
+                  },
+                  {
+                    title: 'API Documentation',
+                    description: 'Technical documentation for developers',
+                    icon: 'Code',
+                    color: 'bg-green-500',
+                    items: ['REST API', 'WebSocket', 'SDKs'],
+                    available: true
+                  },
+                  {
+                    title: 'Video Tutorials',
+                    description: 'Step-by-step video guides',
+                    icon: 'Play',
+                    color: 'bg-purple-500',
+                    items: ['Platform Overview', 'Advanced Features', 'Tips & Tricks'],
+                    available: true
+                  },
+                  {
+                    title: 'Trading Strategies',
+                    description: 'Learn about different trading approaches',
+                    icon: 'TrendingUp',
+                    color: 'bg-orange-500',
+                    items: ['Day Trading', 'Swing Trading', 'Risk Management'],
+                    available: true
+                  },
+                  {
+                    title: 'Market Data',
+                    description: 'Understanding market data and symbols',
+                    icon: 'BarChart',
+                    color: 'bg-red-500',
+                    items: ['NSE/BSE Symbols', 'Options Chain', 'Historical Data'],
+                    available: true
+                  },
+                  {
+                    title: 'System Status',
+                    description: 'Check platform status and uptime',
+                    icon: 'Activity',
+                    color: 'bg-teal-500',
+                    items: ['Current Status', 'Maintenance Schedule', 'Incident History'],
+                    available: true
+                  }
+                ]?.map((resource, index) => (
+                  <div key={index} className="bg-card border border-border rounded-xl p-6 hover:shadow-lg transition-all duration-200 hover:border-primary/20">
+                    <div className="flex items-center space-x-3 mb-4">
+                      <div className={`w-10 h-10 ${resource?.color} rounded-lg flex items-center justify-center`}>
+                        <Icon name={resource?.icon} size={20} className="text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-foreground">{resource?.title}</h3>
+                        {resource?.available && (
+                          <span className="inline-flex items-center space-x-1 text-xs text-green-600 mt-1">
+                            <Icon name="CheckCircle" size={12} />
+                            <span>Available</span>
+                          </span>
+                        )}
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="font-semibold text-foreground">{resource?.title}</h3>
-                    </div>
+                    <p className="text-sm text-muted-foreground mb-4">{resource?.description}</p>
+                    <ul className="space-y-2 mb-4">
+                      {resource?.items?.map((item, itemIndex) => (
+                        <li key={itemIndex} className="flex items-center space-x-2">
+                          <Icon name="ChevronRight" size={14} className="text-primary" />
+                          <span className="text-sm text-foreground">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <Button 
+                      variant="outline" 
+                      className="w-full" 
+                      size="sm"
+                      onClick={() => handleResourceAction(resource?.title)}
+                    >
+                      <Icon name="ExternalLink" size={14} className="mr-2" />
+                      Explore {resource?.title}
+                    </Button>
                   </div>
-                  <p className="text-sm text-muted-foreground mb-4">{resource?.description}</p>
-                  <ul className="space-y-2">
-                    {resource?.items?.map((item, itemIndex) => (
-                      <li key={itemIndex} className="flex items-center space-x-2">
-                        <Icon name="ChevronRight" size={14} className="text-muted-foreground" />
-                        <span className="text-sm text-foreground">{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <Button variant="ghost" className="w-full mt-4" size="sm">
-                    Explore {resource?.title}
+                ))}
+              </div>
+
+              {/* Quick Access Section */}
+              <div className="bg-primary/5 border border-primary/20 rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center space-x-2">
+                  <Icon name="Zap" size={20} className="text-primary" />
+                  <span>Quick Access</span>
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <Button 
+                    variant="ghost" 
+                    className="h-auto p-4 flex flex-col items-center space-y-2 border border-border hover:border-primary/20"
+                    onClick={() => window?.open('https://docs.tradescope.com/quick-start', '_blank')}
+                  >
+                    <Icon name="Rocket" size={24} className="text-primary" />
+                    <span className="text-sm font-medium">Quick Start</span>
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    className="h-auto p-4 flex flex-col items-center space-y-2 border border-border hover:border-primary/20"
+                    onClick={() => window?.open('https://community.tradescope.com', '_blank')}
+                  >
+                    <Icon name="Users" size={24} className="text-primary" />
+                    <span className="text-sm font-medium">Community</span>
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    className="h-auto p-4 flex flex-col items-center space-y-2 border border-border hover:border-primary/20"
+                    onClick={() => window?.open('https://changelog.tradescope.com', '_blank')}
+                  >
+                    <Icon name="FileText" size={24} className="text-primary" />
+                    <span className="text-sm font-medium">Changelog</span>
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    className="h-auto p-4 flex flex-col items-center space-y-2 border border-border hover:border-primary/20"
+                    onClick={() => setActiveTab('contact')}
+                  >
+                    <Icon name="MessageCircle" size={24} className="text-primary" />
+                    <span className="text-sm font-medium">Get Help</span>
                   </Button>
                 </div>
-              ))}
+              </div>
             </div>
           )}
         </div>
