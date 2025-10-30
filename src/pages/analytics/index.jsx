@@ -10,6 +10,10 @@ import AdvancedFilters from './components/AdvancedFilters';
 import ChartCustomization from './components/ChartCustomization';
 import PremiumVisualizationEngine from './components/PremiumVisualizationEngine';
 import AdvancedMetricsPanel from './components/AdvancedMetricsPanel';
+import PremiumCandlestickChart from './components/PremiumCandlestickChart';
+import PremiumHeatmapMatrix from './components/PremiumHeatmapMatrix';
+import AdvancedRiskMetrics from './components/AdvancedRiskMetrics';
+import Premium3DChart from './components/Premium3DChart';
 import Button from '../../components/ui/Button';
 import Icon from '../../components/AppIcon';
 import { useTrading } from '../../hooks/useTrading';
@@ -135,6 +139,38 @@ const Analytics = () => {
     const chartData = transformDataForChart();
     
     switch (activeChart) {
+      case 'premium-candlestick':
+        return (
+          <PremiumCandlestickChart
+            data={analytics}
+            currency={currency}
+            config={chartConfig}
+          />
+        );
+      case 'premium-heatmap':
+        return (
+          <PremiumHeatmapMatrix
+            data={trades || []}
+            currency={currency}
+            config={chartConfig}
+          />
+        );
+      case 'premium-risk':
+        return (
+          <AdvancedRiskMetrics
+            data={analytics}
+            currency={currency}
+            config={chartConfig}
+          />
+        );
+      case 'premium-3d':
+        return (
+          <Premium3DChart
+            data={analytics}
+            currency={currency}
+            config={chartConfig}
+          />
+        );
       case 'premium-line':
         return (
           <PremiumVisualizationEngine
@@ -180,13 +216,19 @@ const Analytics = () => {
       <Header activeRoute="/analytics" />
       <main className="pt-16">
         <div className="max-w-7xl mx-auto px-6 py-8">
-          {/* Enhanced Page Header */}
+          {/* Enhanced Premium Page Header */}
           <div className="mb-8">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
               <div>
-                <h1 className="text-3xl font-bold text-foreground mb-2">Advanced Analytics</h1>
+                <div className="flex items-center space-x-3 mb-2">
+                  <h1 className="text-3xl font-bold text-foreground">Premium Analytics Suite</h1>
+                  <div className="flex items-center space-x-1 px-3 py-1 bg-gradient-to-r from-accent to-primary rounded-full">
+                    <Icon name="Crown" size={14} className="text-white" />
+                    <span className="text-xs font-semibold text-white">PRO</span>
+                  </div>
+                </div>
                 <p className="text-muted-foreground">
-                  Professional-grade performance insights with institutional-level analytics and risk metrics
+                  Institutional-grade performance insights with AI-powered analytics, advanced risk metrics, and multi-dimensional visualizations
                 </p>
               </div>
               
@@ -205,9 +247,45 @@ const Analytics = () => {
                   iconName="Download"
                   iconPosition="left"
                   onClick={() => handleExportChart('pdf')}
+                  className="bg-gradient-to-r from-accent to-primary hover:from-accent/90 hover:to-primary/90"
                 >
-                  Export Report
+                  Export Premium Report
                 </Button>
+              </div>
+            </div>
+          </div>
+
+          {/* Premium Feature Showcase */}
+          <div className="mb-8 bg-gradient-to-r from-accent/5 via-primary/5 to-accent/5 rounded-xl border border-accent/20 p-6">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+              <div>
+                <h3 className="text-lg font-semibold text-foreground mb-2 flex items-center space-x-2">
+                  <Icon name="Sparkles" size={20} className="text-accent" />
+                  <span>Premium Visualization Features</span>
+                </h3>
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
+                  <div className="flex items-center space-x-2">
+                    <Icon name="CheckCircle" size={14} className="text-success" />
+                    <span>Advanced Candlestick Analysis</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Icon name="CheckCircle" size={14} className="text-success" />
+                    <span>3D Performance Mapping</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Icon name="CheckCircle" size={14} className="text-success" />
+                    <span>Risk Correlation Matrix</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Icon name="CheckCircle" size={14} className="text-success" />
+                    <span>AI-Powered Insights</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex items-center space-x-2 text-sm text-accent">
+                <Icon name="Zap" size={16} />
+                <span>Real-time processing active</span>
               </div>
             </div>
           </div>
@@ -218,7 +296,7 @@ const Analytics = () => {
             <div className="bg-card rounded-lg border border-border p-6">
               <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-6">
                 <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-foreground mb-4">Premium Visualization</h3>
+                  <h3 className="text-lg font-semibold text-foreground mb-4">Premium Visualization Suite</h3>
                   <ChartTypeSelector 
                     activeChart={activeChart} 
                     onChartChange={setActiveChart}
@@ -259,17 +337,27 @@ const Analytics = () => {
               {/* Primary Chart */}
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-semibold text-foreground">Performance Visualization</h2>
-                  <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                    <Icon name="Clock" size={16} />
-                    <span>Last updated: {new Date()?.toLocaleTimeString()}</span>
+                  <h2 className="text-xl font-semibold text-foreground">Advanced Performance Visualization</h2>
+                  <div className="flex items-center space-x-4">
+                    <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+                      <Icon name="Clock" size={16} />
+                      <span>Last updated: {new Date()?.toLocaleTimeString()}</span>
+                    </div>
+                    {activeChart?.startsWith('premium-') && (
+                      <div className="flex items-center space-x-1 px-2 py-1 bg-accent/10 rounded-md">
+                        <Icon name="Crown" size={12} className="text-accent" />
+                        <span className="text-xs font-medium text-accent">Premium</span>
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="bg-card border border-border rounded-xl p-6">
                   {loading?.analytics ? (
                     <div className="flex items-center justify-center h-96">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent"></div>
-                      <span className="ml-3 text-muted-foreground">Loading analytics...</span>
+                      <div className="flex items-center space-x-3">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent"></div>
+                        <span className="ml-3 text-muted-foreground">Loading premium analytics...</span>
+                      </div>
                     </div>
                   ) : (
                     renderActiveChart()
@@ -277,12 +365,30 @@ const Analytics = () => {
                 </div>
               </div>
 
-              {/* Secondary Charts for Comparison */}
-              {activeChart !== 'radar' && (
+              {/* Secondary Charts for Premium Analysis */}
+              {activeChart !== 'radar' && !activeChart?.startsWith('premium-') && (
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-foreground">Strategy Performance Radar</h3>
+                  <h3 className="text-lg font-semibold text-foreground">Complementary Analysis</h3>
                   <div className="bg-card border border-border rounded-xl p-6">
                     <StrategyRadarChart currency={currency} data={analytics} />
+                  </div>
+                </div>
+              )}
+              
+              {/* Premium Multi-Chart View */}
+              {activeChart?.startsWith('premium-') && (
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-foreground">Risk Overview</h3>
+                    <div className="bg-card border border-border rounded-xl p-4 h-64">
+                      <AdvancedRiskMetrics data={analytics?.slice(0, 10)} currency={currency} />
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-foreground">Pattern Analysis</h3>
+                    <div className="bg-card border border-border rounded-xl p-4 h-64">
+                      <PremiumHeatmapMatrix data={trades?.slice(0, 20) || []} currency={currency} />
+                    </div>
                   </div>
                 </div>
               )}
@@ -295,9 +401,17 @@ const Analytics = () => {
                 data={trades || []}
               />
 
-              {/* AI-Powered Performance Insights */}
+              {/* Enhanced AI-Powered Performance Insights */}
               <div className="bg-card rounded-lg border border-border p-6">
-                <h4 className="text-lg font-semibold text-foreground mb-4">AI Performance Insights</h4>
+                <h4 className="text-lg font-semibold text-foreground mb-4 flex items-center space-x-2">
+                  <Icon name="Brain" size={20} className="text-accent" />
+                  <span>AI Performance Insights</span>
+                  <div className="flex items-center space-x-1 px-2 py-1 bg-accent/10 rounded-md">
+                    <Icon name="Cpu" size={10} className="text-accent" />
+                    <span className="text-xs text-accent">AI</span>
+                  </div>
+                </h4>
+                
                 <div className="space-y-4">
                   <div className="bg-gradient-to-r from-success/10 to-success/5 rounded-lg p-4 border border-success/20">
                     <div className="flex items-start space-x-2">
@@ -307,6 +421,10 @@ const Analytics = () => {
                         <p className="text-xs text-muted-foreground mt-1">
                           Your 30-day rolling Sharpe ratio has improved by 18% with consistent risk management
                         </p>
+                        <div className="mt-2 flex items-center space-x-1">
+                          <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
+                          <span className="text-xs text-success">Confidence: 94%</span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -319,6 +437,10 @@ const Analytics = () => {
                         <p className="text-xs text-muted-foreground mt-1">
                           Consider position sizing adjustments during high VIX periods (>25) for optimal risk control
                         </p>
+                        <div className="mt-2 flex items-center space-x-1">
+                          <div className="w-2 h-2 bg-warning rounded-full animate-pulse"></div>
+                          <span className="text-xs text-warning">Action recommended</span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -331,6 +453,10 @@ const Analytics = () => {
                         <p className="text-xs text-muted-foreground mt-1">
                           Your best risk-adjusted returns occur between 10:30-11:30 AM EST - consider concentrating activity
                         </p>
+                        <div className="mt-2 flex items-center space-x-1">
+                          <div className="w-2 h-2 bg-accent rounded-full animate-pulse"></div>
+                          <span className="text-xs text-accent">ML Analysis</span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -343,8 +469,54 @@ const Analytics = () => {
                         <p className="text-xs text-muted-foreground mt-1">
                           Your momentum strategy shows 2.3x alpha vs market benchmark with 15% lower volatility
                         </p>
+                        <div className="mt-2 flex items-center space-x-1">
+                          <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+                          <span className="text-xs text-primary">Institutional grade</span>
+                        </div>
                       </div>
                     </div>
+                  </div>
+                </div>
+
+                {/* AI Suggestions */}
+                <div className="mt-4 pt-4 border-t border-border">
+                  <h5 className="text-sm font-medium text-foreground mb-2">Suggested Actions</h5>
+                  <div className="space-y-2">
+                    <button className="w-full text-left p-2 rounded-lg bg-accent/5 hover:bg-accent/10 transition-colors">
+                      <div className="flex items-center space-x-2">
+                        <Icon name="ArrowRight" size={12} className="text-accent" />
+                        <span className="text-xs text-foreground">Increase position size in momentum trades</span>
+                      </div>
+                    </button>
+                    <button className="w-full text-left p-2 rounded-lg bg-primary/5 hover:bg-primary/10 transition-colors">
+                      <div className="flex items-center space-x-2">
+                        <Icon name="ArrowRight" size={12} className="text-primary" />
+                        <span className="text-xs text-foreground">Set dynamic stop-loss based on volatility</span>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Premium Features Panel */}
+              <div className="bg-gradient-to-br from-accent/10 to-primary/10 rounded-lg border border-accent/30 p-6">
+                <h4 className="text-lg font-semibold text-foreground mb-4">Premium Analytics</h4>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">Real-time Risk Monitoring</span>
+                    <Icon name="CheckCircle" size={16} className="text-success" />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">AI Pattern Recognition</span>
+                    <Icon name="CheckCircle" size={16} className="text-success" />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">Advanced Correlation Analysis</span>
+                    <Icon name="CheckCircle" size={16} className="text-success" />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">3D Visualization Suite</span>
+                    <Icon name="CheckCircle" size={16} className="text-success" />
                   </div>
                 </div>
               </div>
