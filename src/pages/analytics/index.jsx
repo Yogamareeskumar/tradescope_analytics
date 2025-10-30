@@ -14,6 +14,8 @@ import PremiumCandlestickChart from './components/PremiumCandlestickChart';
 import PremiumHeatmapMatrix from './components/PremiumHeatmapMatrix';
 import AdvancedRiskMetrics from './components/AdvancedRiskMetrics';
 import Premium3DChart from './components/Premium3DChart';
+import PremiumCorrelationMatrix from './components/PremiumCorrelationMatrix';
+import PremiumReturnsDistribution from './components/PremiumReturnsDistribution';
 import Button from '../../components/ui/Button';
 import Icon from '../../components/AppIcon';
 import { useTrading } from '../../hooks/useTrading';
@@ -163,6 +165,22 @@ const Analytics = () => {
             config={chartConfig}
           />
         );
+      case 'premium-correlation':
+        return (
+          <PremiumCorrelationMatrix
+            data={analytics}
+            currency={currency}
+            config={chartConfig}
+          />
+        );
+      case 'premium-distribution':
+        return (
+          <PremiumReturnsDistribution
+            data={analytics}
+            currency={currency}
+            config={chartConfig}
+          />
+        );
       case 'premium-3d':
         return (
           <Premium3DChart
@@ -210,6 +228,29 @@ const Analytics = () => {
         return <CalendarHeatmap currency={currency} data={analytics} />;
     }
   };
+
+  // Get chart information for display
+  const getChartInfo = () => {
+    const chartTypes = {
+      'calendar': { name: 'Calendar Heatmap', description: 'Daily P&L visualization over time' },
+      'radar': { name: 'Strategy Performance', description: 'Multi-dimensional strategy analysis' },
+      'bar': { name: 'Time Analysis', description: 'Performance breakdown by time periods' },
+      'line': { name: 'Trend Analysis', description: 'Performance trends and patterns' },
+      'premium-candlestick': { name: 'Advanced Candlestick', description: 'Professional OHLC analysis with volume' },
+      'premium-heatmap': { name: 'Heatmap Matrix', description: 'Time-based performance pattern analysis' },
+      'premium-risk': { name: 'Risk Analytics', description: 'Advanced risk metrics and drawdown analysis' },
+      'premium-correlation': { name: 'Correlation Matrix', description: 'Asset correlation and relationship analysis' },
+      'premium-distribution': { name: 'Returns Distribution', description: 'Statistical return distribution analysis' },
+      'premium-3d': { name: '3D Surface Plot', description: 'Multi-dimensional performance visualization' },
+      'premium-line': { name: 'Premium Line Chart', description: 'Enhanced line visualization with advanced features' },
+      'premium-area': { name: 'Premium Area Chart', description: 'Enhanced area visualization with gradients' },
+      'premium-bar': { name: 'Premium Bar Chart', description: 'Enhanced bar visualization with animations' }
+    };
+    
+    return chartTypes?.[activeChart] || chartTypes?.['calendar'];
+  };
+
+  const currentChartInfo = getChartInfo();
 
   return (
     <div className="min-h-screen bg-background">
@@ -337,12 +378,8 @@ const Analytics = () => {
               {/* Primary Chart */}
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-semibold text-foreground">Advanced Performance Visualization</h2>
-                  <div className="flex items-center space-x-4">
-                    <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                      <Icon name="Clock" size={16} />
-                      <span>Last updated: {new Date()?.toLocaleTimeString()}</span>
-                    </div>
+                  <div className="flex items-center space-x-3">
+                    <h2 className="text-xl font-semibold text-foreground">{currentChartInfo?.name}</h2>
                     {activeChart?.startsWith('premium-') && (
                       <div className="flex items-center space-x-1 px-2 py-1 bg-accent/10 rounded-md">
                         <Icon name="Crown" size={12} className="text-accent" />
@@ -350,7 +387,14 @@ const Analytics = () => {
                       </div>
                     )}
                   </div>
+                  <div className="flex items-center space-x-4">
+                    <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+                      <Icon name="Clock" size={16} />
+                      <span>Last updated: {new Date()?.toLocaleTimeString()}</span>
+                    </div>
+                  </div>
                 </div>
+                <p className="text-sm text-muted-foreground mb-4">{currentChartInfo?.description}</p>
                 <div className="bg-card border border-border rounded-xl p-6">
                   {loading?.analytics ? (
                     <div className="flex items-center justify-center h-96">
@@ -517,6 +561,23 @@ const Analytics = () => {
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-muted-foreground">3D Visualization Suite</span>
                     <Icon name="CheckCircle" size={16} className="text-success" />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">Statistical Distribution Analysis</span>
+                    <Icon name="CheckCircle" size={16} className="text-success" />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">Multi-Asset Correlation Matrix</span>
+                    <Icon name="CheckCircle" size={16} className="text-success" />
+                  </div>
+                </div>
+                
+                <div className="mt-4 pt-4 border-t border-border">
+                  <div className="flex items-center space-x-2 text-sm">
+                    <Icon name="Sparkles" size={14} className="text-accent" />
+                    <span className="text-muted-foreground">
+                      Powered by advanced analytics engine
+                    </span>
                   </div>
                 </div>
               </div>
